@@ -3,6 +3,7 @@ body {
   height: 100%;
 }
 
+
 body {
   display: flex;
   justify-content: center;
@@ -67,4 +68,16 @@ kbd{
 
 .empty{
   flex-basis: 22%;
+}
+
+.ac{
+  background-color: #d9534f;
+}
+
+.ac kbd{
+  background-color: transparent;
+}
+
+.key:hover{
+  cursor: pointer;
 }

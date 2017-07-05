@@ -5,20 +5,96 @@ $(document).ready(function () {
 
   const keys = Array.from(document.querySelectorAll('.key'));
   keys.forEach(key => {
-    key.addEventListener('click', main);
+    key.addEventListener('click', function (e) {
+      var char = $(this).text();
+      console.log($(this).text());
+      if (char === '8') {
+        console.log('eight');
+      }
+    });
   });
   window.addEventListener('keydown', main);
   function main(e) {
     const key = document.querySelector(`.key[data-key="${e.keyCode}"]`);
     var keyCode = e.keyCode;
     if (!key) return;
-    console.log(keyCode);
+    mainThread(keyCode);
+  }
+
+  function deleteAChar() {
+    console.log('test');
+    var text = document.querySelector('.ongoing-op-text').textContent;
+    if (text.length == 0) {
+      console.log();
+    }
+    else {
+      text = text.substr(0, text.length - 1);
+      document.querySelector('.ongoing-op-text').innerHTML = text;
+    }
+  }
+
+  function calculate(operator) {
+    var text = document.querySelector('.ongoing-op-text').textContent;
+    var arr = text.split(' ');
+    var number1 = parseInt(arr[0]);
+    var number2 = parseInt(arr[2]);
+    var result;
+    switch (arr[1]) {
+      case '/':
+        console.log(number1 / number2);
+        result = number1 / number2;
+        return number1 / number2;
+        break;
+      case '*':
+        console.log(number1 * number2);
+        result = number1 * number2;
+        return number1 * number2;
+        break;
+      case '-':
+        console.log(number1 - number2);
+        result = number1 - number2;
+        return number1 - number2;
+        break;
+      case '+':
+        console.log(number1 + number2);
+        result = number1 + number2;
+        return number1 + number2;
+        break;
+      default:
+        console.log('other operator');
+    }
+  }
+
+  function addToActivityLog() {
+    var text = document.querySelector('.ongoing-op-text').textContent;
+    var result = calculate();
+    var operationComplete = `<div class="operation">${text} = ${result}</div>`;
+    console.log(operationComplete);
+    $('.all-operation').prepend(operationComplete);
+  }
+
+  function stringHasOperator(operator) {
+    var currentOperator = operator;
+    var text = document.querySelector('.ongoing-op-text').textContent;
+    if (text.indexOf('/') == -1 && text.indexOf('*') == -1 && text.indexOf('-') == -1 && text.indexOf('+') == -1) {
+      console.log('add operator');
+      document.querySelector('.ongoing-op-text').innerHTML = text + " " + String.fromCharCode(operator) + " ";
+    } else {
+      calculate();
+      addToActivityLog();
+      document.querySelector('.ongoing-op-text').innerHTML = calculate();
+      //clearTheInputArea();
+    }
+  }
+
+  function mainThread(keyCode) {
     if (keyCode == '46') { //if the key is the delete button
-      console.warn('delete');
-    } else if (keyCode == '111' || keyCode == '106' || keyCode == '109') { // if the key is an operator
+      deleteAChar();
+    } else if (keyCode == '111' || keyCode == '106' || keyCode == '109' || keyCode == '107') { // if the key is an operator
       keyCode -= '64';
       console.log(String.fromCharCode(keyCode));
-    } else if (keyCode == '110'){ // if it the dot 
+      stringHasOperator(keyCode);
+    } else if (keyCode == '110') { // if it the dot 
       keyCode -= '64';
       addOnGoingOperation(keyCode);
     } else if (keyCode == '13') { // it the enter button
@@ -33,6 +109,13 @@ $(document).ready(function () {
     text += String.fromCharCode(keyCode);
     document.querySelector('.ongoing-op-text').innerHTML = text;
   }
+
+  function clearAll() {
+    document.querySelector('.ongoing-op-text').innerHTML = '';
+    document.querySelector('.all-operation').innerHTML = '';
+  }
+
+  document.querySelector('.ac').addEventListener('click', clearAll);
 
   // function addOngoingOperation() {
   //   $('.ongoing-op-text').text(ongoingOpertaion);
